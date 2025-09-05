@@ -1,5 +1,5 @@
 import express from "express";
-import users from "./routes/users";
+import users from "./routers/users";
 import morgan from "morgan";
 
 const PORT = 3000;
