@@ -1,92 +1,59 @@
 import express from "express";
-import { User } from "../types";
+import { UserCreate, UserUpdate } from "../types";
+import * as userRepository from "../repositories/users";
 
 const router = express.Router();
-
-const users: User[] = [
-  {
-    id: 0,
-    name: "John",
-    email: "john@mail.com",
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    id: 1,
-    name: "Alice",
-    email: "alice@mail.com",
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    id: 2,
-    name: "Bob",
-    email: "bob@mail.com",
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-];
 
 /**
  * Get all users
  */
-router.get(`/`, (_req, res) => res.send(users));
+router.get(`/`, async (_req, res) => {
+  const allUsers = await userRepository.getAllUsers();
+  res.send(allUsers);
+});
 
 /**
  * Get a user by ID
  */
-router.get(`/:userId`, (req, res) => {
+router.get(`/:userId`, async (req, res) => {
   const userId = parseInt(req.params.userId);
-  const userResponse = users.filter((user) => userId === user.id);
+  const user = await userRepository.getUserById(userId);
 
-  res.send(userResponse);
+  res.send(user);
 });
 
 /**
  * Add a new user
  */
-router.post(`/`, (req, res) => {
-  const newUser = {
-    id: 3,
-    name: req.body.name,
-    email: req.body.email,
-    created_at: new Date(),
-    updated_at: new Date(),
-  };
-  users.push(newUser);
+router.post(`/`, async (req, res) => {
+  const newUserData: UserCreate = req.body;
+
+  const newUser = await userRepository.addUser(newUserData);
+
   res.send(newUser);
 });
 
 /**
- * Update email and name for an existing user (by ID)
+ * Update the data for an existing user (by ID)
  */
-router.put(`/:userId`, (req, res) => {
+router.patch(`/:userId`, async (req, res) => {
   const userId = parseInt(req.params.userId);
-  const index = users.findIndex((user) => userId === user.id);
-  const userToUpdate = users[index];
+  const dataToUpdate: UserUpdate = req.body;
 
-  const updatedUser = {
-    ...userToUpdate,
-    name: req.body.email,
-    email: req.body.email,
-  };
+  const updatedUser = await userRepository.updateUser(userId, dataToUpdate);
 
-  users[index] = updatedUser;
   res.send(updatedUser);
 });
 
 /**
  * Delete a user by ID
  */
-router.delete(`/:userId`, (req, res) => {
+router.delete(`/:userId`, async (req, res) => {
   const userId = parseInt(req.params.userId);
 
-  const index = users.findIndex((user) => userId === user.id);
+  const deletedUser = await userRepository.deleteUser(userId);
 
-  const removedUser = users[index];
-  users.splice(index, 1);
-
-  res.send(removedUser);
+  res.send(deletedUser)
 });
 
 export default router;

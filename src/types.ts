@@ -1,7 +1,9 @@
-export interface User {
-  id: number;
+export interface UserCreate {
   name: string;
   email: string;
-  created_at: Date;
-  updated_at: Date;
+}
+
+export interface UserUpdate {
+  name?: string;
+  email?: string;
 }
