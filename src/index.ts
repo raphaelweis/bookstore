@@ -1,9 +1,9 @@
 import express from "express";
-import users from "./routes/users.ts";
-
-const app = express();
+import users from "./routes/users";
 
 const PORT = 3000;
+
+const app = express();
 
 app.use(express.json());
 app.use("/users", users);

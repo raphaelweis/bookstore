@@ -10,6 +10,10 @@ Technologies used include:
 
 ## Run the project
 
+This project uses [`tsx`](https://tsx.is/) with the watch command. simply run :
+
 ```
 npm run dev
 ```
+The server will launch on `localhost:3000` and will watch for changes in your files
+as you develop.
