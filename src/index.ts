@@ -1,5 +1,6 @@
 import express from "express";
 import users from "./routers/users";
+import books from "./routers/books";
 import morgan from "morgan";
 import { defaultErrorHandler } from "./errors";
 
@@ -13,6 +14,7 @@ app.use(morgan("dev"));
 
 // Routers
 app.use("/users", users);
+app.use("/books", books);
 
 // Error handlers
 app.use(defaultErrorHandler);
