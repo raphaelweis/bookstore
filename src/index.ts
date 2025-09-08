@@ -1,6 +1,7 @@
 import express from "express";
 import users from "./routers/users";
 import morgan from "morgan";
+import { defaultErrorHandler } from "./errors";
 
 const PORT = 3000;
 
@@ -12,6 +13,9 @@ app.use(morgan("dev"));
 
 // Routers
 app.use("/users", users);
+
+// Error handlers
+app.use(defaultErrorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server ready at: http://localhost:${PORT}`);

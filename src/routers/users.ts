@@ -7,53 +7,59 @@ const router = express.Router();
 /**
  * Get all users
  */
-router.get(`/`, async (_req, res) => {
-  const allUsers = await userRepository.getAllUsers();
-  res.send(allUsers);
+router.get(`/`, async (_req, res, next) => {
+  userRepository
+    .getAllUsers()
+    .then((allUsers) => res.send(allUsers))
+    .catch(next);
 });
 
 /**
  * Get a user by ID
  */
-router.get(`/:userId`, async (req, res) => {
+router.get(`/:userId`, async (req, res, next) => {
   const userId = parseInt(req.params.userId);
-  const user = await userRepository.getUserById(userId);
-
-  res.send(user);
+  userRepository
+    .getUserById(userId)
+    .then((user) => res.send(user))
+    .catch(next);
 });
 
 /**
  * Add a new user
  */
-router.post(`/`, async (req, res) => {
+router.post(`/`, async (req, res, next) => {
   const newUserData: UserCreate = req.body;
 
-  const newUser = await userRepository.addUser(newUserData);
-
-  res.send(newUser);
+  userRepository
+    .addUser(newUserData)
+    .then((newUser) => res.send(newUser))
+    .catch(next);
 });
 
 /**
  * Update the data for an existing user (by ID)
  */
-router.patch(`/:userId`, async (req, res) => {
+router.patch(`/:userId`, async (req, res, next) => {
   const userId = parseInt(req.params.userId);
   const dataToUpdate: UserUpdate = req.body;
 
-  const updatedUser = await userRepository.updateUser(userId, dataToUpdate);
-
-  res.send(updatedUser);
+  userRepository
+    .updateUser(userId, dataToUpdate)
+    .then((updatedUser) => res.send(updatedUser))
+    .catch(next);
 });
 
 /**
  * Delete a user by ID
  */
-router.delete(`/:userId`, async (req, res) => {
+router.delete(`/:userId`, async (req, res, next) => {
   const userId = parseInt(req.params.userId);
 
-  const deletedUser = await userRepository.deleteUser(userId);
-
-  res.send(deletedUser)
+  userRepository
+    .deleteUser(userId)
+    .then((deletedUser) => res.send(deletedUser))
+    .catch(next);
 });
 
 export default router;
