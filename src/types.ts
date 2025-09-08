@@ -14,6 +14,18 @@ export interface BookCreate {
 
 export type BookUpdate = Partial<BookCreate>;
 
+export interface BillCreate {
+  billing_address: string;
+  books: BillItemCreate[];
+}
+
+export type BillUpdate = Partial<Omit<BillCreate, "books">>;
+
+export interface BillItemCreate {
+  book_id: number;
+  quantity: number;
+}
+
 export enum ErrorCodes {
   NOT_FOUND = 404,
   SERVER_ERROR = 500,

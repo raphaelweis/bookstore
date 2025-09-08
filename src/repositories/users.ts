@@ -1,6 +1,6 @@
 import { BookstoreError } from "../errors";
 import prisma from "../prismaClient";
-import { ErrorCodes, UserCreate, UserUpdate } from "../types";
+import { ErrorCodes, UserCreate, UserUpdate, BillCreate } from "../types";
 
 export async function getAllUsers() {
   return await prisma.user.findMany();
@@ -33,4 +33,33 @@ export async function updateUser(userId: number, data: UserUpdate) {
 
 export async function deleteUser(userId: number) {
   return await prisma.user.delete({ where: { id: userId } });
+}
+
+export async function newPurchase(userId: number, data: BillCreate) {
+  const now = new Date();
+
+  return await prisma.bill.create({
+    data: {
+      user_id: userId,
+      billing_address: data.billing_address,
+      date: now,
+      billItems: {
+        create: data.books.map((bookPurchaseInfo) => ({
+          book_id: bookPurchaseInfo.book_id,
+          quantity: bookPurchaseInfo.quantity,
+          created_at: now,
+          updated_at: now,
+        })),
+      },
+    },
+    include: {
+      billItems: {
+        select: {
+          id: true,
+          book_id: true,
+          quantity: true,
+        },
+      },
+    },
+  });
 }

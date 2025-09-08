@@ -1,6 +1,12 @@
 import express from "express";
-import { UserCreate, UserUpdate } from "../types";
+import {
+  BillItemCreate,
+  BillCreate,
+  UserCreate,
+  UserUpdate,
+} from "../types";
 import * as userRepository from "../repositories/users";
+import { resolve } from "path";
 
 const router = express.Router();
 
@@ -59,6 +65,20 @@ router.delete(`/:userId`, async (req, res, next) => {
   userRepository
     .deleteUser(userId)
     .then((deletedUser) => res.send(deletedUser))
+    .catch(next);
+});
+
+/**
+ * Purchase some books. This represents one user buying any amount of books. It generates
+ * a bill which is stored and sent back in the response.
+ */
+router.post(`/:userId/purchase`, async (req, res, next) => {
+  const userId = parseInt(req.params.userId);
+  const purchaseData: BillCreate = req.body;
+
+  userRepository
+    .newPurchase(userId, purchaseData)
+    .then((createdBill) => res.send(createdBill))
     .catch(next);
 });
 
