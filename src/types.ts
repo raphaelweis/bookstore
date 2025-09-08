@@ -26,6 +26,8 @@ export interface BillItemCreate {
   quantity: number;
 }
 
+export type BillItemUpdate = Partial<BillItemCreate>;
+
 export enum ErrorCodes {
   NOT_FOUND = 404,
   SERVER_ERROR = 500,

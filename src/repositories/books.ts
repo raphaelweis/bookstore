@@ -3,7 +3,7 @@ import prisma from "../prismaClient";
 import { ErrorCodes, BookCreate, BookUpdate } from "../types";
 
 export async function getAllBooks() {
-  return await prisma.book.findMany();
+  return prisma.book.findMany();
 }
 
 export async function getBookById(bookId: number) {
@@ -21,16 +21,16 @@ export async function getBookById(bookId: number) {
 
 // TODO: improve error handling here and below.
 export async function addBook(data: BookCreate) {
-  return await prisma.book.create({ data });
+  return prisma.book.create({ data });
 }
 
 export async function updateBook(bookId: number, data: BookUpdate) {
-  return await prisma.book.update({
+  return prisma.book.update({
     where: { id: bookId },
     data: { ...data, updated_at: new Date() },
   });
 }
 
 export async function deleteBook(bookId: number) {
-  return await prisma.book.delete({ where: { id: bookId } });
+  return prisma.book.delete({ where: { id: bookId } });
 }

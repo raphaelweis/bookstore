@@ -3,7 +3,7 @@ import prisma from "../prismaClient";
 import { ErrorCodes, UserCreate, UserUpdate, BillCreate } from "../types";
 
 export async function getAllUsers() {
-  return await prisma.user.findMany();
+  return prisma.user.findMany();
 }
 
 export async function getUserById(userId: number) {
@@ -21,24 +21,24 @@ export async function getUserById(userId: number) {
 
 // TODO: improve error handling here and below.
 export async function addUser(data: UserCreate) {
-  return await prisma.user.create({ data: data });
+  return prisma.user.create({ data: data });
 }
 
 export async function updateUser(userId: number, data: UserUpdate) {
-  return await prisma.user.update({
+  return prisma.user.update({
     where: { id: userId },
     data: { ...data, updated_at: new Date() },
   });
 }
 
 export async function deleteUser(userId: number) {
-  return await prisma.user.delete({ where: { id: userId } });
+  return prisma.user.delete({ where: { id: userId } });
 }
 
 export async function newPurchase(userId: number, data: BillCreate) {
   const now = new Date();
 
-  return await prisma.bill.create({
+  return prisma.bill.create({
     data: {
       user_id: userId,
       billing_address: data.billing_address,
