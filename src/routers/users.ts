@@ -1,12 +1,6 @@
 import express from "express";
-import {
-  BillItemCreate,
-  BillCreate,
-  UserCreate,
-  UserUpdate,
-} from "../types";
+import { BillCreate, UserCreate, UserUpdate } from "../types";
 import * as userRepository from "../repositories/users";
-import { resolve } from "path";
 
 const router = express.Router();
 

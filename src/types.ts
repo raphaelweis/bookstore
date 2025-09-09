@@ -30,5 +30,12 @@ export type BillItemUpdate = Partial<BillItemCreate>;
 
 export enum ErrorCodes {
   NOT_FOUND = 404,
+  CONFLICT = 409,
   SERVER_ERROR = 500,
+}
+
+export enum PRISMA_ERROR_CODES {
+  NOT_FOUND = "P2025",
+  FOREIGN_KEY_NOT_FOUND = "P2003",
+  CONFLICT = "P2002",
 }

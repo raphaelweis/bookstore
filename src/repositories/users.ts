@@ -1,6 +1,13 @@
+import { PrismaClientKnownRequestError } from "../../generated/prisma/runtime/library";
 import { BookstoreError } from "../errors";
 import prisma from "../prismaClient";
-import { ErrorCodes, UserCreate, UserUpdate, BillCreate } from "../types";
+import {
+  ErrorCodes as HTTPErrorCodes,
+  UserCreate,
+  UserUpdate,
+  BillCreate,
+  PRISMA_ERROR_CODES,
+} from "../types";
 
 export async function getAllUsers() {
   return prisma.user.findMany();
@@ -11,7 +18,7 @@ export async function getUserById(userId: number) {
 
   if (!user) {
     throw new BookstoreError(
-      ErrorCodes.NOT_FOUND,
+      HTTPErrorCodes.NOT_FOUND,
       `User with id: ${userId} was not found.`,
     );
   }
@@ -19,47 +26,108 @@ export async function getUserById(userId: number) {
   return user;
 }
 
-// TODO: improve error handling here and below.
 export async function addUser(data: UserCreate) {
-  return prisma.user.create({ data: data });
+  try {
+    return await prisma.user.create({ data: data });
+  } catch (e) {
+    if (
+      e instanceof PrismaClientKnownRequestError &&
+      e.code === PRISMA_ERROR_CODES.CONFLICT
+    ) {
+      throw new BookstoreError(
+        HTTPErrorCodes.CONFLICT,
+        `A user with email: ${data.email} already exists.`,
+      );
+    }
+  }
 }
 
 export async function updateUser(userId: number, data: UserUpdate) {
-  return prisma.user.update({
-    where: { id: userId },
-    data: { ...data, updated_at: new Date() },
-  });
+  try {
+    return await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...data,
+        updated_at: new Date(),
+      },
+    });
+  } catch (e) {
+    if (
+      e instanceof PrismaClientKnownRequestError &&
+      e.code === PRISMA_ERROR_CODES.NOT_FOUND
+    ) {
+      throw new BookstoreError(
+        HTTPErrorCodes.NOT_FOUND,
+        `User with id: ${userId} was not found`,
+      );
+    }
+  }
 }
 
 export async function deleteUser(userId: number) {
-  return prisma.user.delete({ where: { id: userId } });
+  try {
+    return await prisma.user.delete({ where: { id: userId } });
+  } catch (e) {
+    if (
+      e instanceof PrismaClientKnownRequestError &&
+      e.code === PRISMA_ERROR_CODES.NOT_FOUND
+    ) {
+      throw new BookstoreError(
+        HTTPErrorCodes.NOT_FOUND,
+        `User with id: ${userId} was not found`,
+      );
+    }
+  }
 }
 
 export async function newPurchase(userId: number, data: BillCreate) {
-  const now = new Date();
+  try {
+    const now = new Date();
 
-  return prisma.bill.create({
-    data: {
-      user_id: userId,
-      billing_address: data.billing_address,
-      date: now,
-      billItems: {
-        create: data.books.map((bookPurchaseInfo) => ({
-          book_id: bookPurchaseInfo.book_id,
-          quantity: bookPurchaseInfo.quantity,
-          created_at: now,
-          updated_at: now,
-        })),
-      },
-    },
-    include: {
-      billItems: {
-        select: {
-          id: true,
-          book_id: true,
-          quantity: true,
+    return await prisma.bill.create({
+      data: {
+        user_id: userId,
+        billing_address: data.billing_address,
+        date: now,
+        billItems: {
+          create: data.books.map((bookPurchaseInfo) => ({
+            book_id: bookPurchaseInfo.book_id,
+            quantity: bookPurchaseInfo.quantity,
+            created_at: now,
+            updated_at: now,
+          })),
         },
       },
-    },
-  });
+      include: {
+        billItems: {
+          select: {
+            id: true,
+            book_id: true,
+            quantity: true,
+          },
+        },
+      },
+    });
+  } catch (e) {
+    // TODO: see if this can be improved.
+    if (
+      e instanceof PrismaClientKnownRequestError &&
+      e.code === PRISMA_ERROR_CODES.FOREIGN_KEY_NOT_FOUND
+    ) {
+      switch (e.meta?.constraint) {
+        case "BillItem_book_id_fkey": {
+          throw new BookstoreError(
+            HTTPErrorCodes.NOT_FOUND,
+            `One or multiple book ids are invalid!`,
+          );
+        }
+        case "Bill_user_id_fkey": {
+          throw new BookstoreError(
+            HTTPErrorCodes.NOT_FOUND,
+            `User with id: ${userId} was not found.`,
+          );
+        }
+      }
+    }
+  }
 }
