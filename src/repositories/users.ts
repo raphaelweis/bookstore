@@ -2,7 +2,7 @@ import { PrismaClientKnownRequestError } from "../../generated/prisma/runtime/li
 import { BookstoreError } from "../errors";
 import prisma from "../prismaClient";
 import {
-  ErrorCodes as HTTPErrorCodes,
+  HTTPErrorCodes,
   UserCreate,
   UserUpdate,
   BillCreate,
@@ -19,7 +19,7 @@ export async function getUserById(userId: number) {
   if (!user) {
     throw new BookstoreError(
       HTTPErrorCodes.NOT_FOUND,
-      `User with id: ${userId} was not found.`,
+      `User with id: '${userId}' was not found.`,
     );
   }
 
@@ -36,9 +36,9 @@ export async function addUser(data: UserCreate) {
     ) {
       throw new BookstoreError(
         HTTPErrorCodes.CONFLICT,
-        `A user with email: ${data.email} already exists.`,
+        `A user with email: '${data.email}' already exists.`,
       );
-    }
+    } else throw e;
   }
 }
 
@@ -58,9 +58,9 @@ export async function updateUser(userId: number, data: UserUpdate) {
     ) {
       throw new BookstoreError(
         HTTPErrorCodes.NOT_FOUND,
-        `User with id: ${userId} was not found`,
+        `User with id: '${userId}' was not found`,
       );
-    }
+    } else throw e;
   }
 }
 
@@ -76,7 +76,7 @@ export async function deleteUser(userId: number) {
         HTTPErrorCodes.NOT_FOUND,
         `User with id: ${userId} was not found`,
       );
-    }
+    } else throw e;
   }
 }
 
@@ -124,10 +124,10 @@ export async function newPurchase(userId: number, data: BillCreate) {
         case "Bill_user_id_fkey": {
           throw new BookstoreError(
             HTTPErrorCodes.NOT_FOUND,
-            `User with id: ${userId} was not found.`,
+            `User with id: '${userId}' was not found.`,
           );
         }
       }
-    }
+    } else throw e;
   }
 }

@@ -1,10 +1,10 @@
 import { ErrorRequestHandler } from "express";
-import { ErrorCodes } from "./types";
+import { HTTPErrorCodes } from "./types";
 
 export class BookstoreError extends Error {
   public code: number;
 
-  constructor(code: ErrorCodes, message: string) {
+  constructor(code: HTTPErrorCodes, message: string) {
     super(message);
     this.code = code;
   }
@@ -23,7 +23,7 @@ export const defaultErrorHandler: ErrorRequestHandler = (
       console.error(err);
     }
 
-    res.status(ErrorCodes.SERVER_ERROR).send({
+    res.status(HTTPErrorCodes.SERVER_ERROR).send({
       message: "Something unexpected happened.",
     });
   }

@@ -28,7 +28,7 @@ export interface BillItemCreate {
 
 export type BillItemUpdate = Partial<BillItemCreate>;
 
-export enum ErrorCodes {
+export enum HTTPErrorCodes {
   NOT_FOUND = 404,
   CONFLICT = 409,
   SERVER_ERROR = 500,

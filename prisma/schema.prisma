@@ -49,4 +49,6 @@ model Book {
   created_at      DateTime   @default(now()) @db.Timestamp(6)
   updated_at      DateTime   @default(now()) @db.Timestamp(6)
   billItems       BillItem[]
+
+  @@unique([author, title])
 }
