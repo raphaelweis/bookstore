@@ -25,7 +25,6 @@ export async function getBookById(bookId: number) {
   return book;
 }
 
-// TODO: improve error handling here and below.
 export async function addBook(data: BookCreate) {
   try {
     return await prisma.book.create({ data });
