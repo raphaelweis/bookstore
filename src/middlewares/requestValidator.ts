@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import z, { ZodError } from "zod";
 import { HTTPErrorCodes } from "../types";
 
-export function requestValidator(schema: z.ZodObject<any, any>) {
+export function requestValidator(schema: z.ZodObject) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       schema.parse(req.body);

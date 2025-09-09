@@ -14,7 +14,7 @@ export const defaultErrorHandler: ErrorRequestHandler = (
   err,
   _req,
   res,
-  _next,
+  next,
 ) => {
   if (err instanceof BookstoreError) {
     res.status(err.code).send({ message: err.message });
@@ -27,4 +27,5 @@ export const defaultErrorHandler: ErrorRequestHandler = (
       message: "Something unexpected happened.",
     });
   }
+  next();
 };
