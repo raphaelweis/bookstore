@@ -1,7 +1,13 @@
 import express from "express";
 import * as userRepository from "../repositories/users";
 import { requestValidator } from "../middlewares/requestValidator";
-import { BillCreate, BillCreateSchema, UserCreate, UserCreateSchema, UserUpdate, UserUpdateSchema } from "../schemas/user";
+import {
+  UserCreate,
+  UserCreateSchema,
+  UserUpdate,
+  UserUpdateSchema,
+} from "../schemas/user";
+import { BillCreate, BillCreateSchema } from "../schemas/bill";
 
 const router = express.Router();
 
@@ -41,15 +47,19 @@ router.post(`/`, requestValidator(UserCreateSchema), (req, res, next) => {
 /**
  * Update the data for an existing user (by ID)
  */
-router.patch(`/:userId`, requestValidator(UserUpdateSchema), (req, res, next) => {
-  const userId = parseInt(req.params.userId);
-  const dataToUpdate: UserUpdate = req.body;
+router.patch(
+  `/:userId`,
+  requestValidator(UserUpdateSchema),
+  (req, res, next) => {
+    const userId = parseInt(req.params.userId);
+    const dataToUpdate: UserUpdate = req.body;
 
-  userRepository
-    .updateUser(userId, dataToUpdate)
-    .then((updatedUser) => res.send(updatedUser))
-    .catch(next);
-});
+    userRepository
+      .updateUser(userId, dataToUpdate)
+      .then((updatedUser) => res.send(updatedUser))
+      .catch(next);
+  },
+);
 
 /**
  * Delete a user by ID
@@ -67,14 +77,18 @@ router.delete(`/:userId`, (req, res, next) => {
  * Purchase some books. This represents one user buying any amount of books. It generates
  * a bill which is stored and sent back in the response.
  */
-router.post(`/:userId/purchase`, requestValidator(BillCreateSchema), (req, res, next) => {
-  const userId = parseInt(req.params.userId);
-  const purchaseData: BillCreate = req.body;
+router.post(
+  `/:userId/purchase`,
+  requestValidator(BillCreateSchema),
+  (req, res, next) => {
+    const userId = parseInt(req.params.userId);
+    const purchaseData: BillCreate = req.body;
 
-  userRepository
-    .newPurchase(userId, purchaseData)
-    .then((createdBill) => res.send(createdBill))
-    .catch(next);
-});
+    userRepository
+      .newPurchase(userId, purchaseData)
+      .then((createdBill) => res.send(createdBill))
+      .catch(next);
+  },
+);
 
 export default router;

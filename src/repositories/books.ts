@@ -1,10 +1,9 @@
 import { PrismaClientKnownRequestError } from "../../generated/prisma/runtime/library";
 import { BookstoreError } from "../middlewares/errors";
 import prisma from "../prismaClient";
+import { BookCreate, BookUpdate } from "../schemas/book";
 import {
   HTTPErrorCodes,
-  BookCreate,
-  BookUpdate,
   PRISMA_ERROR_CODES,
 } from "../types";
 

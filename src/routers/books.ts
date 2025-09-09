@@ -1,7 +1,8 @@
 import express from "express";
-import { BookCreate, BookUpdate } from "../types";
 import * as bookRepository from "../repositories/books";
 import { parseDate } from "../utils";
+import { BookCreate, BookCreateSchema, BookUpdate, BookUpdateSchema } from "../schemas/book";
+import { requestValidator } from "../middlewares/requestValidator";
 
 const router = express.Router();
 
@@ -29,8 +30,7 @@ router.get(`/:bookId`, (req, res, next) => {
 /**
  * Add a new book
  */
-// TODO: Add validators to check for correctly formed body.
-router.post(`/`, (req, res, next) => {
+router.post(`/`, requestValidator(BookCreateSchema), (req, res, next) => {
   const newBookData: BookCreate = {
     ...req.body,
     publishing_date: parseDate(req.body.publishing_date),
@@ -45,7 +45,7 @@ router.post(`/`, (req, res, next) => {
 /**
  * Update the data for an existing book (by ID)
  */
-router.patch(`/:bookId`, (req, res, next) => {
+router.patch(`/:bookId`, requestValidator(BookUpdateSchema),(req, res, next) => {
   const bookId = parseInt(req.params.bookId);
   const dataToUpdate: BookUpdate = {
     ...req.body,

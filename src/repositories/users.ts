@@ -1,8 +1,8 @@
-import { networkInterfaces } from "os";
 import { PrismaClientKnownRequestError } from "../../generated/prisma/runtime/library";
 import { BookstoreError } from "../middlewares/errors";
 import prisma from "../prismaClient";
-import { BillCreate, UserCreate, UserUpdate } from "../schemas/user";
+import { BillCreate } from "../schemas/bill";
+import {  UserCreate, UserUpdate } from "../schemas/user";
 import { HTTPErrorCodes, PRISMA_ERROR_CODES } from "../types";
 
 export async function getAllUsers() {

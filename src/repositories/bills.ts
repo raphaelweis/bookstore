@@ -1,13 +1,8 @@
 import { PrismaClientKnownRequestError } from "../../generated/prisma/runtime/library";
 import { BookstoreError } from "../middlewares/errors";
 import prisma from "../prismaClient";
-import {
-  BillItemCreate,
-  BillItemUpdate,
-  BillUpdate,
-  HTTPErrorCodes,
-  PRISMA_ERROR_CODES,
-} from "../types";
+import { BillItemCreate, BillItemUpdate, BillUpdate } from "../schemas/bill";
+import { HTTPErrorCodes, PRISMA_ERROR_CODES } from "../types";
 
 // We want to include these BillItems fields in every response containing Bill objects.
 const includeBillItems = {

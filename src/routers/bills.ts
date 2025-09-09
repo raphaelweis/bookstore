@@ -1,6 +1,14 @@
 import express from "express";
-import { BillItemCreate, BillItemUpdate, BillUpdate } from "../types";
 import * as billsRepository from "../repositories/bills";
+import {
+  BillItemCreate,
+  BillItemCreateSchema,
+  BillItemUpdate,
+  BillItemUpdateSchema,
+  BillUpdate,
+  BillUpdateSchema,
+} from "../schemas/bill";
+import { requestValidator } from "../middlewares/requestValidator";
 
 const router = express.Router();
 
@@ -29,15 +37,19 @@ router.get(`/:billId`, (req, res, next) => {
 /**
  * Update a bill
  */
-router.patch(`/:billId`, (req, res, next) => {
-  const billId = parseInt(req.params.billId);
-  const dataToUpdate: BillUpdate = req.body;
+router.patch(
+  `/:billId`,
+  requestValidator(BillUpdateSchema),
+  (req, res, next) => {
+    const billId = parseInt(req.params.billId);
+    const dataToUpdate: BillUpdate = req.body;
 
-  billsRepository
-    .updateBill(billId, dataToUpdate)
-    .then((updatedBill) => res.send(updatedBill))
-    .catch(next);
-});
+    billsRepository
+      .updateBill(billId, dataToUpdate)
+      .then((updatedBill) => res.send(updatedBill))
+      .catch(next);
+  },
+);
 
 /**
  * Delete a bill. Also deletes all the associated BillItems.
@@ -54,29 +66,37 @@ router.delete(`/:billId`, (req, res, next) => {
 /**
  * Add a bill item for an existing bill.
  */
-router.post(`/:billId/billItems`, (req, res, next) => {
-  const billId = parseInt(req.params.billId);
-  const newBillItemData: BillItemCreate = req.body;
+router.post(
+  `/:billId/billItems`,
+  requestValidator(BillItemCreateSchema),
+  (req, res, next) => {
+    const billId = parseInt(req.params.billId);
+    const newBillItemData: BillItemCreate = req.body;
 
-  billsRepository
-    .addBillItem(billId, newBillItemData)
-    .then((updatedBill) => res.send(updatedBill))
-    .catch(next);
-});
+    billsRepository
+      .addBillItem(billId, newBillItemData)
+      .then((updatedBill) => res.send(updatedBill))
+      .catch(next);
+  },
+);
 
 /**
  * Update one bill item for an existing bill.
  */
-router.patch(`/:billId/billItems/:billItemId`, (req, res, next) => {
-  const billId = parseInt(req.params.billId);
-  const billItemId = parseInt(req.params.billItemId);
-  const dataToUpdate: BillItemUpdate = req.body;
+router.patch(
+  `/:billId/billItems/:billItemId`,
+  requestValidator(BillItemUpdateSchema),
+  (req, res, next) => {
+    const billId = parseInt(req.params.billId);
+    const billItemId = parseInt(req.params.billItemId);
+    const dataToUpdate: BillItemUpdate = req.body;
 
-  billsRepository
-    .updateBillItem(billId, billItemId, dataToUpdate)
-    .then((updatedBill) => res.send(updatedBill))
-    .catch(next);
-});
+    billsRepository
+      .updateBillItem(billId, billItemId, dataToUpdate)
+      .then((updatedBill) => res.send(updatedBill))
+      .catch(next);
+  },
+);
 
 /**
  * Delete a bill item for an existing bill.

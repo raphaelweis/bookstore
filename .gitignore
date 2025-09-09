@@ -5,5 +5,8 @@
 node_modules/
 generated/prisma/
 
+# Typescript
+dist/
+
 # Env
 .env
