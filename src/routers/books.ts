@@ -1,7 +1,11 @@
 import express from "express";
 import * as bookRepository from "../repositories/books";
-import { parseDate } from "../utils";
-import { BookCreate, BookCreateSchema, BookUpdate, BookUpdateSchema } from "../schemas/book";
+import {
+  BookCreate,
+  BookCreateSchema,
+  BookUpdate,
+  BookUpdateSchema,
+} from "../schemas/book";
 import { requestValidator } from "../middlewares/requestValidator";
 
 const router = express.Router();
@@ -31,10 +35,7 @@ router.get(`/:bookId`, (req, res, next) => {
  * Add a new book
  */
 router.post(`/`, requestValidator(BookCreateSchema), (req, res, next) => {
-  const newBookData: BookCreate = {
-    ...req.body,
-    publishing_date: parseDate(req.body.publishing_date),
-  };
+  const newBookData: BookCreate = req.body;
 
   bookRepository
     .addBook(newBookData)
@@ -45,20 +46,19 @@ router.post(`/`, requestValidator(BookCreateSchema), (req, res, next) => {
 /**
  * Update the data for an existing book (by ID)
  */
-router.patch(`/:bookId`, requestValidator(BookUpdateSchema),(req, res, next) => {
-  const bookId = parseInt(req.params.bookId);
-  const dataToUpdate: BookUpdate = {
-    ...req.body,
-    publishing_date: req.body.publishing_date
-      ? parseDate(req.body.publishing_date)
-      : undefined,
-  };
+router.patch(
+  `/:bookId`,
+  requestValidator(BookUpdateSchema),
+  (req, res, next) => {
+    const bookId = parseInt(req.params.bookId);
+    const dataToUpdate: BookUpdate = req.body;
 
-  bookRepository
-    .updateBook(bookId, dataToUpdate)
-    .then((updatedBook) => res.send(updatedBook))
-    .catch(next);
-});
+    bookRepository
+      .updateBook(bookId, dataToUpdate)
+      .then((updatedBook) => res.send(updatedBook))
+      .catch(next);
+  },
+);
 
 /**
  * Delete a book by ID

@@ -4,8 +4,10 @@ const tsJestTransformCfg = createDefaultPreset().transform;
 
 /** @type {import("jest").Config} **/
 export default {
+  clearMocks: true,
   testEnvironment: "node",
   transform: {
     ...tsJestTransformCfg,
   },
+  setupFilesAfterEnv: ["./src/singleton.ts"],
 };
