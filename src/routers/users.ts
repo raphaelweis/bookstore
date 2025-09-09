@@ -1,13 +1,14 @@
 import express from "express";
-import { BillCreate, UserCreate, UserUpdate } from "../types";
 import * as userRepository from "../repositories/users";
+import { requestValidator } from "../middlewares/requestValidator";
+import { BillCreate, BillCreateSchema, UserCreate, UserCreateSchema, UserUpdate, UserUpdateSchema } from "../schemas/user";
 
 const router = express.Router();
 
 /**
  * Get all users
  */
-router.get(`/`, async (_req, res, next) => {
+router.get(`/`, (_req, res, next) => {
   userRepository
     .getAllUsers()
     .then((allUsers) => res.send(allUsers))
@@ -17,7 +18,7 @@ router.get(`/`, async (_req, res, next) => {
 /**
  * Get a user by ID
  */
-router.get(`/:userId`, async (req, res, next) => {
+router.get(`/:userId`, (req, res, next) => {
   const userId = parseInt(req.params.userId);
   userRepository
     .getUserById(userId)
@@ -28,7 +29,7 @@ router.get(`/:userId`, async (req, res, next) => {
 /**
  * Add a new user
  */
-router.post(`/`, async (req, res, next) => {
+router.post(`/`, requestValidator(UserCreateSchema), (req, res, next) => {
   const newUserData: UserCreate = req.body;
 
   userRepository
@@ -40,7 +41,7 @@ router.post(`/`, async (req, res, next) => {
 /**
  * Update the data for an existing user (by ID)
  */
-router.patch(`/:userId`, async (req, res, next) => {
+router.patch(`/:userId`, requestValidator(UserUpdateSchema), (req, res, next) => {
   const userId = parseInt(req.params.userId);
   const dataToUpdate: UserUpdate = req.body;
 
@@ -53,7 +54,7 @@ router.patch(`/:userId`, async (req, res, next) => {
 /**
  * Delete a user by ID
  */
-router.delete(`/:userId`, async (req, res, next) => {
+router.delete(`/:userId`, (req, res, next) => {
   const userId = parseInt(req.params.userId);
 
   userRepository
@@ -66,7 +67,7 @@ router.delete(`/:userId`, async (req, res, next) => {
  * Purchase some books. This represents one user buying any amount of books. It generates
  * a bill which is stored and sent back in the response.
  */
-router.post(`/:userId/purchase`, async (req, res, next) => {
+router.post(`/:userId/purchase`, requestValidator(BillCreateSchema), (req, res, next) => {
   const userId = parseInt(req.params.userId);
   const purchaseData: BillCreate = req.body;
 

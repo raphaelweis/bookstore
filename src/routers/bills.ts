@@ -1,21 +1,13 @@
 import express from "express";
-import {
-  BillItemCreate,
-  BillItemUpdate,
-  BillUpdate,
-  BookCreate,
-  BookUpdate,
-} from "../types";
+import { BillItemCreate, BillItemUpdate, BillUpdate } from "../types";
 import * as billsRepository from "../repositories/bills";
-import { resolve } from "path";
-import { rmSync } from "fs";
 
 const router = express.Router();
 
 /**
  * Get all bills
  */
-router.get(`/`, async (_req, res, next) => {
+router.get(`/`, (_req, res, next) => {
   billsRepository
     .getAllBills()
     .then((allBills) => res.send(allBills))
@@ -25,7 +17,7 @@ router.get(`/`, async (_req, res, next) => {
 /**
  * Get a bill by ID
  */
-router.get(`/:billId`, async (req, res, next) => {
+router.get(`/:billId`, (req, res, next) => {
   const billId = parseInt(req.params.billId);
 
   billsRepository
@@ -37,7 +29,7 @@ router.get(`/:billId`, async (req, res, next) => {
 /**
  * Update a bill
  */
-router.patch(`/:billId`, async (req, res, next) => {
+router.patch(`/:billId`, (req, res, next) => {
   const billId = parseInt(req.params.billId);
   const dataToUpdate: BillUpdate = req.body;
 
@@ -50,7 +42,7 @@ router.patch(`/:billId`, async (req, res, next) => {
 /**
  * Delete a bill. Also deletes all the associated BillItems.
  */
-router.delete(`/:billId`, async (req, res, next) => {
+router.delete(`/:billId`, (req, res, next) => {
   const billId = parseInt(req.params.billId);
 
   billsRepository
@@ -62,7 +54,7 @@ router.delete(`/:billId`, async (req, res, next) => {
 /**
  * Add a bill item for an existing bill.
  */
-router.post(`/:billId/billItems`, async (req, res, next) => {
+router.post(`/:billId/billItems`, (req, res, next) => {
   const billId = parseInt(req.params.billId);
   const newBillItemData: BillItemCreate = req.body;
 
@@ -75,7 +67,7 @@ router.post(`/:billId/billItems`, async (req, res, next) => {
 /**
  * Update one bill item for an existing bill.
  */
-router.patch(`/:billId/billItems/:billItemId`, async (req, res, next) => {
+router.patch(`/:billId/billItems/:billItemId`, (req, res, next) => {
   const billId = parseInt(req.params.billId);
   const billItemId = parseInt(req.params.billItemId);
   const dataToUpdate: BillItemUpdate = req.body;
@@ -89,7 +81,7 @@ router.patch(`/:billId/billItems/:billItemId`, async (req, res, next) => {
 /**
  * Delete a bill item for an existing bill.
  */
-router.delete(`/:billId/billItems/:billItemId`, async (req, res, next) => {
+router.delete(`/:billId/billItems/:billItemId`, (req, res, next) => {
   const billId = parseInt(req.params.billId);
   const billItemId = parseInt(req.params.billItemId);
 

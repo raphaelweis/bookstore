@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * Get all books
  */
-router.get(`/`, async (_req, res, next) => {
+router.get(`/`, (_req, res, next) => {
   bookRepository
     .getAllBooks()
     .then((allBooks) => res.send(allBooks))
@@ -18,7 +18,7 @@ router.get(`/`, async (_req, res, next) => {
 /**
  * Get a book by ID
  */
-router.get(`/:bookId`, async (req, res, next) => {
+router.get(`/:bookId`, (req, res, next) => {
   const bookId = parseInt(req.params.bookId);
   bookRepository
     .getBookById(bookId)
@@ -30,7 +30,7 @@ router.get(`/:bookId`, async (req, res, next) => {
  * Add a new book
  */
 // TODO: Add validators to check for correctly formed body.
-router.post(`/`, async (req, res, next) => {
+router.post(`/`, (req, res, next) => {
   const newBookData: BookCreate = {
     ...req.body,
     publishing_date: parseDate(req.body.publishing_date),
@@ -45,7 +45,7 @@ router.post(`/`, async (req, res, next) => {
 /**
  * Update the data for an existing book (by ID)
  */
-router.patch(`/:bookId`, async (req, res, next) => {
+router.patch(`/:bookId`, (req, res, next) => {
   const bookId = parseInt(req.params.bookId);
   const dataToUpdate: BookUpdate = {
     ...req.body,
@@ -63,7 +63,7 @@ router.patch(`/:bookId`, async (req, res, next) => {
 /**
  * Delete a book by ID
  */
-router.delete(`/:bookId`, async (req, res, next) => {
+router.delete(`/:bookId`, (req, res, next) => {
   const bookId = parseInt(req.params.bookId);
 
   bookRepository

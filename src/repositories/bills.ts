@@ -1,5 +1,5 @@
 import { PrismaClientKnownRequestError } from "../../generated/prisma/runtime/library";
-import { BookstoreError } from "../errors";
+import { BookstoreError } from "../middlewares/errors";
 import prisma from "../prismaClient";
 import {
   BillItemCreate,

@@ -1,5 +1,5 @@
 import { ErrorRequestHandler } from "express";
-import { HTTPErrorCodes } from "./types";
+import { HTTPErrorCodes } from "../types";
 
 export class BookstoreError extends Error {
   public code: number;

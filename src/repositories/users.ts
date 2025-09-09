@@ -1,13 +1,9 @@
+import { networkInterfaces } from "os";
 import { PrismaClientKnownRequestError } from "../../generated/prisma/runtime/library";
-import { BookstoreError } from "../errors";
+import { BookstoreError } from "../middlewares/errors";
 import prisma from "../prismaClient";
-import {
-  HTTPErrorCodes,
-  UserCreate,
-  UserUpdate,
-  BillCreate,
-  PRISMA_ERROR_CODES,
-} from "../types";
+import { BillCreate, UserCreate, UserUpdate } from "../schemas/user";
+import { HTTPErrorCodes, PRISMA_ERROR_CODES } from "../types";
 
 export async function getAllUsers() {
   return prisma.user.findMany();
@@ -90,12 +86,16 @@ export async function newPurchase(userId: number, data: BillCreate) {
         billing_address: data.billing_address,
         date: now,
         billItems: {
-          create: data.books.map((bookPurchaseInfo) => ({
-            book_id: bookPurchaseInfo.book_id,
-            quantity: bookPurchaseInfo.quantity,
-            created_at: now,
-            updated_at: now,
-          })),
+          createMany: {
+            data: [
+              ...data.books.map((bookPurchaseInfo) => ({
+                book_id: bookPurchaseInfo.book_id,
+                quantity: bookPurchaseInfo.quantity,
+                created_at: now,
+                updated_at: now,
+              })),
+            ],
+          },
         },
       },
       include: {
